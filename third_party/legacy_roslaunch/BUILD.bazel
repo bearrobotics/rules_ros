@@ -26,6 +26,7 @@ py_library(
         "@ros_comm//:rosparam",
         "@ros_comm_msgs//:py_rosgraph_msgs",
         "@ros_ros//:rosclean",
+        "//third_party/catkin:find_in_workspaces",
         requirement("pyyaml"),
         requirement("rospkg"),
     ],

@@ -9,7 +9,13 @@ config_setting(
 
 cc_ros_library(
     name = "rospack",
-    srcs = glob(["src/*.cpp"]),
+    srcs = [
+        "src/rospack.cpp",
+        "src/rospack_cmdline.cpp",
+        "src/utils.cpp",
+        "src/rospack_backcompat.cpp",
+        
+    ],
     hdrs = glob(["include/rospack/*.h", "src/*.h"]),
     includes = ["include"],
     visibility = ["//visibility:public"],
