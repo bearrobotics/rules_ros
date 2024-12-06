@@ -463,7 +463,7 @@ def load_config_default(roslaunch_files,
             loader.load(f, config, argv=args, verbose=verbose)
         except xmlloader.XmlParseException as e:
             raise RLException(e)
-        except loader.LoadException as e:
+        except xmlloader.loader.LoadException as e:
             raise RLException(e)
 
     # we need this for the hardware test systems, which builds up

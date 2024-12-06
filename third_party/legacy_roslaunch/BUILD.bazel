@@ -33,9 +33,18 @@ py_library(
 
 py_binary(
     name = "roscore",
-    srcs = ["main.py"],
-    args = ["--core"],
-    main = "main.py",
+    srcs = ["roscore.py"],
+    legacy_create_init = False,
+    main = "roscore.py",
+    visibility = ["//visibility:public"],
+    deps = [":legacy_roslaunch"],
+)
+
+py_binary(
+    name = "roslaunch",
+    srcs = ["roslaunch.py"],
+    legacy_create_init = False,
+    main = "roslaunch.py",
     visibility = ["//visibility:public"],
     deps = [":legacy_roslaunch"],
 )
