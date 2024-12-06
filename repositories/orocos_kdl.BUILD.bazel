@@ -15,7 +15,6 @@ cc_library(
     ]),
     hdrs = glob([
         "orocos_kdl/src/**/*.h",
-        "orocos_kdl/src/*.h",
         "orocos_kdl/src/**/*.hpp",
         "orocos_kdl/src/*.hpp",
         "orocos_kdl/src/**/*.inl",
