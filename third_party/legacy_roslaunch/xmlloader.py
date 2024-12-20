@@ -448,7 +448,10 @@ class XmlLoader(loader.Loader):
             ]  # This is necessary because child() does not make a copy of the param list.
 
             # required attributes
-            node_type = self.reqd_attrs(tag, context, ('type',))[0]
+            try:
+                node_type = self.reqd_attrs(tag, context, ('bazel',))[0]
+            except:
+                node_type = self.reqd_attrs(tag, context, ('type',))[0]
 
             # optional attributes
             machine, args, output, respawn, respawn_delay, cwd, launch_prefix, \
