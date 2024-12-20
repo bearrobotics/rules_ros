@@ -41,12 +41,15 @@ by roslaunch and xacro, but it is not yet a top-level ROS feature.
 
 import math
 import os
+import glob
 from io import StringIO  # Python 3.x
 
 import rosgraph.names
 
+import yaml
 from third_party.legacy_roslaunch.loader import convert_value
 
+_bearfile = None
 
 class SubstitutionException(Exception):
     """
@@ -148,6 +151,47 @@ def _dirname(resolved, a, _args, context):
     return resolved.replace("$(%s)" % a,
                             _eval_dirname(context.get('filename', None)))
 
+def _get_bearfile():
+    global _bearfile
+    if _bearfile is None:
+        if 'BEAR_CONFIG' not in os.environ:
+            raise SubstitutionException('BEAR_CONFIG not found')
+        filename = os.environ['BEAR_CONFIG']
+        with open(filename) as f:
+            try:
+                _bearfile = yaml.load(f)
+                return _bearfile
+            except:
+                raise SubstitutionException('Cannot parse bear config file %s' % filename)
+        raise SubstitutionException('Cannot open bear config file %s' % filename)
+    else:
+        return _bearfile
+
+def _extract_bearconfig(arg, config):
+    paths = arg.split('.')
+    for path in paths:
+        if path not in config:
+            raise SubstitutionException('Cannot find given config path %s' % path)
+        config = config[path]
+    return config
+
+def _bearconfig(resolved, a, args, context):
+    """
+    process $(bearconfig PATH)
+    :returns: found config, ``str``
+    :raises: :exc:SubstitutionException: if $(bearconfig PATH) substitution failed
+    """
+    if len(args) != 1:
+        raise SubstitutionException('$(bearconfig PATH) command only accepts one argument [%s]' % a)
+    config = _extract_bearconfig(args[0], _get_bearfile())
+    result = yaml.dump(config)
+    if result.endswith('\n...\n'):  # trim explicit yaml ending mark
+        result = result[:-5]
+    # Remove trailing newlines
+    result = result.rstrip('\n')
+    # Remove single quotations - yaml considered strings
+    result = result.strip("'")
+    return result
 
 def _eval_find(pkg):
     raise SubstitutionException("`find` is deprecated!")
@@ -163,7 +207,14 @@ def _find(resolved, a, args, context):
     :raises: :exc:SubstitutionException: if PKG invalidly specified
     :raises: :exc:`rospkg.ResourceNotFound` If PKG requires resource (e.g. package) that does not exist
     """
-    raise SubstitutionException("$(find pkg) is deprecated!")
+    _, after = _split_command(resolved, a)
+    path, after = _separate_first_path(after)
+
+    # WARNING: this is heavily modified from the original $(find).
+    # This picks the first result of glob('**/<package>') so there can be side effects.
+    # e.g) $(find dynamic_client) => 'ROS/system_control/dynamic_client'
+    dirs = glob.glob(f"**/{args[0]}", recursive=True)
+    return os.getcwd() + "/" + dirs[0] + path
 
 
 def _find_executable(resolved, a, args, _context, source_path_to_packages=None):
@@ -352,13 +403,14 @@ def resolve_args(arg_str, context=None, resolve_anon=True, _filename=None):
     # then resolve 'find' as it requires the subsequent path to be expanded already
     commands = {
         'find': _find,
+        'bearconfig': _bearconfig,
     }
     resolved = _resolve_args(resolved, context, resolve_anon, commands)
     return resolved
 
 
 def _resolve_args(arg_str, context, _resolve_anon, commands):
-    valid = ['find', 'env', 'optenv', 'dirname', 'anon', 'arg']
+    valid = ['bearconfig', 'find', 'env', 'optenv', 'dirname', 'anon', 'arg']
     resolved = arg_str
     for a in _collect_args(arg_str):
         splits = [s for s in a.split(' ') if s]
