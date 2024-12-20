@@ -33,6 +33,7 @@ py_binary(
     name = "genaction",
     srcs = ["actionlib_msgs/scripts/genaction.py"],
     visibility = ["//visibility:public"],
+    legacy_create_init = False,
 )
 
 ros_interface_library(

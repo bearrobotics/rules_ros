@@ -50,3 +50,5 @@ py_binary(
 )
 
 pylint()
+
+exports_files(["roscore.py"])
