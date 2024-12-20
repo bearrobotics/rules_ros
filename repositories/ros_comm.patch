@@ -1,0 +1,8 @@
+--- tools/rosmaster/src/rosmaster/main.py
++++ tools/rosmaster/src/rosmaster/main.py
+@@ -136,4 +136,4 @@ WARNING ACHTUNG WARNING ACHTUNG WARNING
+         master.stop()
+
+ if __name__ == "__main__":
+-    main()
++    rosmaster_main()

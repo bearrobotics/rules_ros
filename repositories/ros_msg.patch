@@ -5,24 +5,24 @@ index 9be35402..d1848741 100644
 @@ -44,7 +44,6 @@ import os
  import sys
  import yaml
- 
+
 -from catkin.find_in_workspaces import find_in_workspaces
- 
+
  import rospkg
  import genmsg
 @@ -54,6 +53,8 @@ import roslib.message
- 
+
  from optparse import OptionParser
- 
+
 +from rules_python.python.runfiles import runfiles
 +
  MODE_MSG = '.msg'
  MODE_SRV = '.srv'
- 
+
 @@ -546,11 +547,27 @@ def iterate_packages(rospack, mode):
  _catkin_workspace_to_source_spaces = {}
  _catkin_source_path_to_packages = {}
- 
+
 +def find_in_bazel_workspaces(search_dirs, pkgname, first_match_only=False):
 +    runfiles_dir = os.getenv('RUNFILES_DIR')
 +    if not runfiles_dir:

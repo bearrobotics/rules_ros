@@ -116,10 +116,10 @@ expand_template(
 
 cc_ros_library(
     name = "roscpp_lib",
-    srcs = glob(["clients/roscpp/src/libros/**/*.cpp"]) + [_CONFIG_H],
-    hdrs = glob(["clients/roscpp/include/**/*.h"]) + [_ROS_COMMON_H],
+    srcs = glob(["clients/roscpp/src/libros/**/*.cpp"]) + [_ROS_COMMON_H, _CONFIG_H],
+    hdrs = glob(["clients/roscpp/include/**/*.h"]),
     defines = ["BOOST_ALLOW_DEPRECATED_HEADERS"],
-    includes = ["clients/roscpp/include"],
+    includes = ["clients/roscpp/include", "ros"],
     linkopts = ["-lm"],
     ros_package_name = "roscpp",
     visibility = ["//visibility:public"],

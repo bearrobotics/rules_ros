@@ -143,15 +143,17 @@ def ros_repositories():
         urls = ["https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz"],
     )
 
-    # Branched off ros_comm 1.15.9. Changes are in branch feature/rules_ros.
     maybe(
         http_archive,
         name = "ros_comm",
         build_file = "@com_github_mvukov_rules_ros//repositories:ros_comm.BUILD.bazel",
-        sha256 = "845984fd3cb757a7d6a5e334084b4deb87624b26d38890e513a7feccf6bcea06",
-        strip_prefix = "ros_comm-0.0.1",
-        patches = ["@com_github_mvukov_rules_ros//:ros_msg.patch"],
-        urls = ["https://github.com/Pailowmenah/ros_comm/archive/refs/tags/0.0.1.tar.gz"],
+        sha256 = "3937e5cd3043db5e8d2a2e522068a5b7b28dbb4959ee909730675ed4c82d70b7",
+        strip_prefix = "ros_comm-1.17.0",
+        urls = ["https://github.com/ros/ros_comm/archive/refs/tags/1.17.0.tar.gz"],
+        patches = [
+            "@com_github_mvukov_rules_ros//repositories:ros_comm.patch",
+            "@com_github_mvukov_rules_ros//repositories:ros_msg.patch",
+        ],
     )
 
     maybe(
