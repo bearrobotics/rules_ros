@@ -392,7 +392,7 @@ class XmlLoader(loader.Loader):
 
         return test_name, time_limit, retry
 
-    NODE_ATTRS = ['pkg', 'type', 'machine', 'name', 'args', 'output', \
+    NODE_ATTRS = ['pkg', 'type', 'bazel', 'machine', 'name', 'args', 'output', \
             'respawn', 'respawn_delay', 'cwd', NS, CLEAR_PARAMS, \
             'launch-prefix', 'required']
     TEST_ATTRS = NODE_ATTRS + ['test-name', 'time-limit', 'retry']
